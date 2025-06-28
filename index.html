@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNFROZEN Leadership Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #3182ce, #63b3ed);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 5px;
+        }
+
+        .assessment-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 15px;
+            border-left: 4px solid #3182ce;
+        }
+
+        .question h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .rating-btn {
+            background: #e2e8f0;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4a5568;
+            border: 2px solid transparent;
+        }
+
+        .rating-btn:hover {
+            background: #cbd5e0;
+            transform: translateY(-2px);
+            border-color: #a0aec0;
+        }
+
+        .rating-btn.selected {
+            background: #2b6cb0 !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 108, 176, 0.5);
+            border: 3px solid #1a365d !important;
+        }
+
+        .score-display {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            transform: scale(0);
+            transition: transform 0.5s ease;
+            opacity: 0;
+        }
+
+        .score-display.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-interpretation {
+            background: white;
+            color: #2d3748;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .glacier-mode {
+            border-left: 5px solid #2b6cb0;
+            background: linear-gradient(45deg, #ebf8ff, #bee3f8);
+        }
+
+        .adaptive-mode {
+            border-left: 5px solid #38a169;
+            background: linear-gradient(45deg, #f0fff4, #c6f6d5);
+        }
+
+        .flow-mode {
+            border-left: 5px solid #805ad5;
+            background: linear-gradient(45deg, #faf5ff, #e9d8fd);
+        }
+
+        .next-steps {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #3182ce, #63b3ed);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #3182ce, #63b3ed);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .author-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .rating-buttons {
+                justify-content: space-between;
+            }
+
+            .rating-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .assessment-container, .next-steps, .author-section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧊 UNFROZEN Leadership</h1>
+            <p>Transform Rigid "Glacier" Leadership Into Flexible "Snow" Leadership</p>
+            <div>
+                <span class="badge">⚡ 5-minute tool</span>
+                <span class="badge">📱 Mobile optimized</span>
+                <span class="badge">🔄 Used by 10,000+ leaders</span>
+            </div>
+        </div>
+
+        <div class="author-section">
+            <h3>👋 Welcome, Executive Leader</h3>
+            <p style="margin: 15px 0;">I'm <strong>Ajay Kelkar</strong>, former CMO of HDFC Bank, TEDx speaker, and leadership coach.</p>
+            <p style="color: #4a5568;">After 20+ years in executive roles, I discovered that the most effective leaders aren't the ones who never bend—they're the ones who know how to stay soft while remaining strong.</p>
+            <p style="margin-top: 15px;"><strong>📧</strong> ajaykelkar@gmail.com <strong>|</strong> <strong>💼</strong> LinkedIn: Ajay Kelkar</p>
+        </div>
+
+        <div class="assessment-container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2b6cb0;">📊 Your Leadership Assessment</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #4a5568;"><strong>⏱️ 90 seconds</strong> | Rate yourself 1-5 (1=Never, 5=Always)</p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p style="text-align: center; margin-bottom: 30px; color: #4a5568;">Progress: <span id="progressText">0/6 questions</span></p>
+
+            <div class="question" data-question="1">
+                <h3>1. I feel the need to speak first in meetings</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="question" data-question="2">
+                <h3>2. I rush to provide solutions when others share problems</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="question" data-question="3">
+                <h3>3. I feel uncomfortable with uncertainty or not knowing</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="question" data-question="4">
+                <h3>4. My worth feels tied to being seen as competent and decisive</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="question" data-question="5">
+                <h3>5. I find it hard to ask for help or admit confusion</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="question" data-question="6">
+                <h3>6. I avoid showing vulnerability in professional settings</h3>
+                <div class="rating-buttons">
+                    <button type="button" class="rating-btn" data-rating="1">1</button>
+                    <button type="button" class="rating-btn" data-rating="2">2</button>
+                    <button type="button" class="rating-btn" data-rating="3">3</button>
+                    <button type="button" class="rating-btn" data-rating="4">4</button>
+                    <button type="button" class="rating-btn" data-rating="5">5</button>
+                </div>
+            </div>
+
+            <div class="score-display" id="scoreDisplay">
+                <div class="score-number" id="scoreNumber">0/30</div>
+                <p style="font-size: 1.2rem;">Your Leadership Flexibility Score</p>
+
+                <div class="score-interpretation" id="scoreInterpretation">
+                    <!-- Dynamic interpretation will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="next-steps hidden" id="nextSteps">
+            <h2 style="color: #2b6cb0; margin-bottom: 20px;">🚨 Your Emergency Protocol</h2>
+            <p style="margin-bottom: 20px;">📱 Screenshot this and save to your phone</p>
+
+            <div style="background: #f7fafc; padding: 25px; border-radius: 15px; text-align: left; margin: 20px 0;">
+                <h4 style="margin-bottom: 15px;">When you feel yourself "freezing" under pressure:</h4>
+                <p><strong>1️⃣ PAUSE</strong> (10 seconds before responding)</p>
+                <p><strong>2️⃣ ASK</strong> "What's driving this urgency?"</p>
+                <p><strong>3️⃣ REMIND</strong> "I can be decisive without being rigid"</p>
+                <p><strong>4️⃣ CHOOSE</strong> One small act of curiosity over control</p>
+            </div>
+
+            <h3 style="color: #2b6cb0; margin: 30px 0 20px;">📧 Get the Complete 7-Day Course</h3>
+            <p style="margin-bottom: 20px;">Free email series delivered to your inbox</p>
+
+            <div style="background: #f7fafc; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <p><strong>Email:</strong> ajaykelkar@gmail.com</p>
+                <p><strong>Subject:</strong> "7-Day UNFROZEN Course Request"</p>
+                <p><strong>Include:</strong> Your name, role, biggest leadership challenge, and your score</p>
+            </div>
+
+            <a href="mailto:ajaykelkar@gmail.com?subject=7-Day UNFROZEN Course Request" class="cta-button">📧 Send Email Now</a>
+
+            <p style="margin: 20px 0; font-size: 0.9rem; color: #4a5568;">✅ <strong>94%</strong> report improved flexibility | ✅ <strong>89%</strong> complete the full course</p>
+        </div>
+    </div>
+
+    <script>
+        let responses = {};
+        let questionsAnswered = 0;
+
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, setting up buttons...');
+
+            // Add click listeners to all rating buttons
+            const ratingButtons = document.querySelectorAll('.rating-btn');
+            console.log('Found', ratingButtons.length, 'rating buttons');
+
+            ratingButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    console.log('Button clicked!');
+
+                    const questionDiv = this.closest('.question');
+                    const questionNum = questionDiv.getAttribute('data-question');
+                    const rating = parseInt(this.getAttribute('data-rating'));
+
+                    console.log('Question:', questionNum, 'Rating:', rating);
+
+                    selectRating(questionNum, rating, this);
+                });
+            });
+        });
+
+        function selectRating(questionNum, rating, clickedButton) {
+            console.log('selectRating called:', questionNum, rating);
+
+            // Remove selected class from all buttons in this question
+            const questionDiv = clickedButton.closest('.question');
+            const questionButtons = questionDiv.querySelectorAll('.rating-btn');
+            questionButtons.forEach(btn => btn.classList.remove('selected'));
+
+            // Add selected class to clicked button
+            clickedButton.classList.add('selected');
+
+            // Store the response
+            const wasNew = !responses[questionNum];
+            responses[questionNum] = rating;
+
+            // Update questions answered count
+            if (wasNew) {
+                questionsAnswered++;
+            }
+
+            console.log('Responses:', responses);
+            console.log('Questions answered:', questionsAnswered);
+
+            // Update progress
+            updateProgress();
+
+            // Calculate and show score if all questions answered
+            if (questionsAnswered === 6) {
+                console.log('All questions answered, calculating score...');
+                setTimeout(calculateScore, 500);
+            }
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const percentage = (questionsAnswered / 6) * 100;
+
+            if (progressFill) {
+                progressFill.style.width = percentage + '%';
+            }
+            if (progressText) {
+                progressText.textContent = `${questionsAnswered}/6 questions`;
+            }
+
+            console.log('Progress updated:', percentage + '%');
+        }
+
+        function calculateScore() {
+            console.log('Calculating score...');
+
+            const total = Object.values(responses).reduce((sum, value) => sum + value, 0);
+            console.log('Total score:', total);
+
+            // Show score display
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreInterpretation = document.getElementById('scoreInterpretation');
+            const nextSteps = document.getElementById('nextSteps');
+
+            if (scoreNumber) {
+                scoreNumber.textContent = `${total}/30`;
+            }
+
+            if (scoreDisplay) {
+                scoreDisplay.classList.add('show');
+                scoreDisplay.style.transform = 'scale(1)';
+                scoreDisplay.style.opacity = '1';
+            }
+
+            // Determine interpretation
+            let interpretation = '';
+            let modeClass = '';
+
+            if (total >= 20) {
+                modeClass = 'glacier-mode';
+                interpretation = `
+                    <h4 style="color: #2b6cb0; margin-bottom: 15px;">🧊 Glacier Mode - High Transformation Potential</h4>
+                    <p>You have strong rigid leadership patterns, which means you have tremendous opportunity for flexibility gains. Your structured approach is a strength—now we'll help you add adaptability to your toolkit.</p>
+                    <p style="margin-top: 10px;"><strong>Next:</strong> Focus on the Emergency Protocol and start with small experiments in low-stakes situations.</p>
+                `;
+            } else if (total >= 15) {
+                modeClass = 'adaptive-mode';
+                interpretation = `
+                    <h4 style="color: #38a169; margin-bottom: 15px;">⚡ Adaptive Mode - Room for Growth</h4>
+                    <p>You have a good baseline with clear opportunities to optimize your flexibility. You already show adaptive tendencies—we'll help you strengthen and expand them.</p>
+                    <p style="margin-top: 10px;"><strong>Next:</strong> Practice the Emergency Protocol and choose experiments that stretch your comfort zone.</p>
+                `;
+            } else {
+                modeClass = 'flow-mode';
+                interpretation = `
+                    <h4 style="color: #805ad5; margin-bottom: 15px;">❄️ Flow Mode - Maintain Agility</h4>
+                    <p>You naturally demonstrate leadership flexibility. Your gift is staying adaptive while maintaining strength. Now focus on helping others develop their flexibility.</p>
+                    <p style="margin-top: 10px;"><strong>Next:</strong> Model adaptive leadership for your team and organization.</p>
+                `;
+            }
+
+            if (scoreInterpretation) {
+                scoreInterpretation.innerHTML = interpretation;
+                scoreInterpretation.className = `score-interpretation ${modeClass}`;
+            }
+
+            // Show next steps
+            if (nextSteps) {
+                setTimeout(() => {
+                    nextSteps.classList.remove('hidden');
+                    nextSteps.scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            }
+
+            console.log('Score calculation complete!');
+        }
+    </script>
+</body>
+</html>
